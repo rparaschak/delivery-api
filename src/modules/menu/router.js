@@ -6,10 +6,10 @@ import {runAsyncWrapper} from "../../utils/asyncMiddleware.js";
 const menuRouter = new express.Router();
 
 menuRouter.post('/', runAsyncWrapper(createMenu));
-menuRouter.put('/:id', runAsyncWrapper(updateMenu));
+menuRouter.put('/:menuId', runAsyncWrapper(updateMenu));
 menuRouter.get('/', runAsyncWrapper(getMenus));
 
 // todo: remove all menu items from deleted menu as well
-menuRouter.delete('/:id', runAsyncWrapper(deleteMenu));
+menuRouter.delete('/:menuId', runAsyncWrapper(deleteMenu));
 
 export default menuRouter;

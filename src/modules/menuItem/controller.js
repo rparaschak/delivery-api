@@ -1,15 +1,23 @@
 import MenuItemModel from "./models/MenuItem.js";
 import MenuModel from "../menu/models/Menu.js";
 import {extractAuth} from "../user/extractAuth.js";
+import UserModel from "../user/models/User.js";
 
 export const createMenuItem = async (req, res) => {
     const {name, price, description, menuId} = req.body;
 
     const {userId} = extractAuth(req);
-    const menu = await MenuModel.findOne({_id: menuId});
+    const [menu, user] = await Promise.all([
+        MenuModel.findOne({_id: menuId}),
+        UserModel.findOne({_id: userId}),
+    ]);
 
-    if(!menu || menu.restaurant !== userId) {
-        return  res.status(403).send('Unauthorized');
+    if (!user || !menu) {
+        throw new Error('Щось не знайдено')
+    }
+
+    if (menu.restaurant.toString() !== user.restaurant.toString()) {
+        throw new Error('Forbidden');
     }
 
     if (!name || !price || !description || !menuId)
@@ -49,16 +57,21 @@ export const getMenuItem = async (req, res) => {
 };
 
 export const updateMenuItem = async (req, res) => {
-    const {id} = req.params;
+    const {menuItemId} = req.params;
     const {userId} = extractAuth(req);
-    const menuItem = await MenuItemModel.findOne({_id: id});
-    const menu = await MenuModel.findOne({_id: menuItem.menuId});
+    const menuItem = await MenuItemModel.findOne({_id: menuItemId});
+    const [menu, user] = await Promise.all([
+        MenuModel.findOne({_id: menuItem.menuId}),
+        UserModel.findOne({_id: userId}),
+    ]);
 
-    if(!menu || menu.restaurant !== userId) {
-        return  res.status(403).send('Unauthorized');
+    if (!user || !menu) {
+        throw new Error('Щось не знайдено')
     }
 
-
+    if (menu.restaurant.toString() !== user.restaurant.toString()) {
+        throw new Error('Forbidden');
+    }
     const {name, price, description} = req.body;
     const updatedItem = {};
 
@@ -70,9 +83,9 @@ export const updateMenuItem = async (req, res) => {
         updatedItem.description = description;
 
     try {
-        const menuItem = await MenuItemModel.findOneAndUpdate({_id: id}, updatedItem, {new: true});
+        const menuItem = await MenuItemModel.findOneAndUpdate({_id: menuItemId}, updatedItem, {new: true});
         if (!menuItem)
-            return res.status(404).send(`menus with id ${id} not found`);
+            return res.status(404).send(`menus with id ${menuItemId} not found`);
         res.status(200).json(menuItem);
     } catch (e) {
         console.log(e);
@@ -81,21 +94,29 @@ export const updateMenuItem = async (req, res) => {
 };
 
 export const deleteMenuItem = async (req, res) => {
-    const {id} = req.params;
-
+    const {menuItemId} = req.params;
     const {userId} = extractAuth(req);
-    const menuItem = await MenuItemModel.findOne({_id: id});
-    const menu = await MenuModel.findOne({_id: menuItem.menuId});
 
-    if(!menu || menu.restaurant !== userId) {
-        return  res.status(403).send('Unauthorized');
+    const menuItem = await MenuItemModel.findOne({_id: menuItemId});
+
+    const [menu, user] = await Promise.all([
+        MenuModel.findOne({_id: menuItem.menuId}),
+        UserModel.findOne({_id: userId}),
+    ]);
+
+    if (!user || !menu) {
+        throw new Error('Щось не знайдено')
     }
 
-    if (!id)
-        throw new Error('Id field is required');
+    if (menu.restaurant.toString() !== user.restaurant.toString()) {
+        throw new Error('Forbidden');
+    }
+
+    if (!menuItemId)
+        throw new Error('Id param is required');
     try {
         await MenuItemModel.deleteOne({
-            _id: id
+            _id: menuItemId
         });
         res.status(204).send();
     } catch (e) {

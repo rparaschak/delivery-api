@@ -27,12 +27,12 @@ export const createMenu = async (req, res) => {
 
 
 export const deleteMenu = async (req, res) => {
-    const {id} = req.params;
-    if (!id)
+    const {menuId} = req.params;
+    if (!menuId)
         throw new Error('Id field is required');
     try {
         await MenuModel.deleteOne({
-            _id: id
+            _id: menuId
         });
         res.status(204).send();
     } catch (e) {
@@ -58,13 +58,13 @@ export const getMenus = async (req, res) => {
 };
 
 export const updateMenu = async (req, res) => {
-    const {id} = req.params;
+    const {menuId} = req.params;
     const {name} = req.body;
 
     try {
-        const menu = await MenuModel.findOneAndUpdate({_id:id},{name},{new: true});
+        const menu = await MenuModel.findOneAndUpdate({_id:menuId},{name},{new: true});
         if (!menu)
-            return res.status(404).send(`menus with id ${id} not found`);
+            return res.status(404).send(`menus with id ${menuId} not found`);
         res.status(200).json(menu);
     } catch (e) {
         console.log(e);

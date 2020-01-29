@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
-
 import UserModel from './models/User.js';
 import RestaurantModel from '../restaurant/models/Restaurant.js';
 import {createAccessTokenForUser} from './tokens.js';
+import {extractAuth} from "./extractAuth.js";
 
 /** Creates user and restaurant */
 export const createUserAndRestaurant = async (req, res) => {
@@ -87,6 +86,25 @@ export const authenticate = async (req, res) => {
     } catch(e){
         console.log(e);
         res.status(500).send(e.message);
-        return;
+    }
+};
+
+export const getUser = async (req, res) => {
+    const {userId} = extractAuth(req);
+
+    try {
+        const user = await UserModel.findOne({_id: userId});
+        res.status(201).json({
+            user: {
+                login: user.login,
+                restaurant: user.restaurant
+            },
+            tokens: {
+                accessToken: req.headers.authorization
+            },
+        });
+    } catch(e){
+        console.log(e);
+        res.status(500).send(e.message);
     }
 };

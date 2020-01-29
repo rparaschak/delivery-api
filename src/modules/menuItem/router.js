@@ -5,8 +5,8 @@ import {createMenuItem, getMenuItem, deleteMenuItem, updateMenuItem} from "./con
 const menuItemRouter = new express.Router();
 
 menuItemRouter.post('/', runAsyncWrapper(createMenuItem));
-menuItemRouter.put('/:id', runAsyncWrapper(updateMenuItem));
+menuItemRouter.put('/:menuItemId', runAsyncWrapper(updateMenuItem));
 menuItemRouter.get('/', runAsyncWrapper(getMenuItem));
-menuItemRouter.delete('/:id', runAsyncWrapper(deleteMenuItem));
+menuItemRouter.delete('/:menuItemId', runAsyncWrapper(deleteMenuItem));
 
 export default menuItemRouter
