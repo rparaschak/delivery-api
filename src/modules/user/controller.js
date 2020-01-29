@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 import UserModel from './models/User.js';
 import RestaurantModel from '../restaurant/models/Restaurant.js';
+import {createAccessTokenForUser} from './tokens.js';
 
 /** Creates user and restaurant */
 export const createUserAndRestaurant = async (req, res) => {
@@ -39,7 +40,16 @@ export const createUserAndRestaurant = async (req, res) => {
                 restaurant: newRestaurant.id,
             });
 
-        res.status(201).json(newUser);
+        const accessToken = createAccessTokenForUser(newUser.id);
+
+        res.status(201).json({
+            user: {
+                login: newUser.login,
+            },
+            tokens: {
+                accessToken
+            },
+        });
 
     } catch (e) {
         console.log(e);
