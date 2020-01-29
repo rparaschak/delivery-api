@@ -1,8 +1,17 @@
 import MenuItemModel from "./models/MenuItem.js";
 import MenuModel from "../menu/models/Menu.js";
+import {extractAuth} from "../user/extractAuth.js";
 
 export const createMenuItem = async (req, res) => {
     const {name, price, description, menuId} = req.body;
+
+    const {userId} = extractAuth(req);
+    const menu = await MenuModel.findOne({_id: menuId});
+
+    if(!menu || menu.restaurant !== userId) {
+        return  res.status(403).send('Unauthorized');
+    }
+
     if (!name || !price || !description || !menuId)
         throw new Error('name, price, description and menuId are required fields');
     try {
@@ -41,6 +50,15 @@ export const getMenuItem = async (req, res) => {
 
 export const updateMenuItem = async (req, res) => {
     const {id} = req.params;
+    const {userId} = extractAuth(req);
+    const menuItem = await MenuItemModel.findOne({_id: id});
+    const menu = await MenuModel.findOne({_id: menuItem.menuId});
+
+    if(!menu || menu.restaurant !== userId) {
+        return  res.status(403).send('Unauthorized');
+    }
+
+
     const {name, price, description} = req.body;
     const updatedItem = {};
 
@@ -64,6 +82,15 @@ export const updateMenuItem = async (req, res) => {
 
 export const deleteMenuItem = async (req, res) => {
     const {id} = req.params;
+
+    const {userId} = extractAuth(req);
+    const menuItem = await MenuItemModel.findOne({_id: id});
+    const menu = await MenuModel.findOne({_id: menuItem.menuId});
+
+    if(!menu || menu.restaurant !== userId) {
+        return  res.status(403).send('Unauthorized');
+    }
+
     if (!id)
         throw new Error('Id field is required');
     try {
