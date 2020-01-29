@@ -18,6 +18,14 @@ app.use(bodyParser.json());
 app.use('/menu', menuRouter);
 app.use('/user', userRouter);
 
+app.use((error, req, res, next) => {
+    if(error){
+        console.error(error);
+        return res.status(500).send(error.message);
+    }
+    next();
+});
+
 mongoose.connect('mongodb+srv://deliverUser:nH1MzZgaSB5yrdN1@deliver-kxvhj.mongodb.net/deliver?retryWrites=true&w=majority', {useNewUrlParser: true})
   .then(() => {
     console.log('Connected to DB');

@@ -1,14 +1,21 @@
 import MenuModel from './models/Menu.js';
-import mongoose from 'mongoose';
+import UserModel from '../user/models/User.js';
+
+import {extractAuth} from '../user/extractAuth.js';
+
 
 export const createMenu = async (req, res) => {
+    const {userId} = extractAuth(req);
+
     const {name} = req.body;
     if (!name)
         throw new Error('Name is required');
 
     try {
+        const user = await UserModel.findById(userId);
         const createdMenu = await MenuModel.create({
-            name
+            name,
+            restaurant: user.restaurant,
         });
 
         res.status(201).json(createdMenu);
