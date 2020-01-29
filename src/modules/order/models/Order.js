@@ -11,6 +11,9 @@ const OrderSchema = new mongoose.Schema({
         itemId: Types.ObjectId,
         count: Number,
     }],
+    dateCreated:  { type: Date, default: Date.now },
 });
+
+OrderSchema.index({ restaurant: 1, dateCreated: 1 });
 
 export default mongoose.model('Order', OrderSchema);

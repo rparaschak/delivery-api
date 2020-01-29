@@ -1,5 +1,7 @@
-import OrderModel from '../order/models/Order.js';
+import mongoose from 'mongoose';
 
+import OrderModel from './models/Order.js';
+import UserModel from '../user/models/User.js';
 import {extractAuth} from '../user/extractAuth.js';
 
 
@@ -12,10 +14,10 @@ export const createOrder = async (req, res) => {
     try {
         const newOrder = await OrderModel
             .create({
+                restaurant: mongoose.Types.ObjectId(restaurantId),
                 customerName,
                 phoneNumber,
                 items,
-                restaurantId,
                 description,
             });
 
@@ -28,23 +30,27 @@ export const createOrder = async (req, res) => {
 };
 
 export const getOrders = async (req, res) => {
-    console.log(req.body);
-    const {customerName, phoneNumber, items, restaurantId, description} = req.body;
-    if (!customerName || !phoneNumber || !items || !restaurantId || !description)
-        throw new Error('!customerName || !phoneNumber || !items || !restaurantId || !description');
+    const {userId} = extractAuth(req);
+    const user = await UserModel.findById(userId);
+
+    const dateFrom = new Date(req.query.dateFrom || 0);
+    const dateTo = new Date(req.query.dateTo || Date.now());
+
+    const filter = {
+        restaurant: user.restaurant,
+        dateCreated: {
+            $gte: dateFrom,
+            $lte: dateTo,
+        },
+    };
+
+    if(!user)
+        throw new Error('User not found');
 
     try {
-        const newOrder = await OrderModel
-            .create({
-                customerName,
-                phoneNumber,
-                items,
-                restaurantId,
-                description,
-            });
+        const orders = await OrderModel.find(filter);
 
-
-        res.status(201).json(newOrder);
+        res.status(200).json(orders);
     } catch (e) {
         console.log(e);
         res.status(500).send(e.message || 'Something went wrong');
