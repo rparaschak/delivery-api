@@ -1,7 +1,8 @@
 import MenuModel from './models/Menu.js';
 
 export const createMenu = async (req, res) => {
-    if (!req.body.name)
+    const {name} = req.body;
+    if (!name)
         throw new Error('Name is required');
 
     try {
@@ -12,6 +13,6 @@ export const createMenu = async (req, res) => {
         res.status(201).json(createdMenu);
     } catch (e) {
         console.log(e);
-        res.send('Something went wrong');
+        res.status(500).send('Something went wrong');
     }
 };
