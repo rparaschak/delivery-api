@@ -20,15 +20,30 @@ export const createMenu = async (req, res) => {
 
 
 export const deleteMenu = async (req, res) => {
-    const {id} = req.body;
+    const {id} = req.params;
     if (!id)
         throw new Error('Id field is required');
     try {
-        const _id = mongoose.Types.ObjectId(id);
         await MenuModel.deleteOne({
-            _id
+            _id: id
         });
-        res.status(201).json('menu deleted successfully');
+        res.status(204).send();
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Something went wrong');
+    }
+};
+
+export const getMenus = async (req, res) => {
+    const {restaurantName} = req.query;
+
+    const filter = {};
+    if (restaurantName) {
+        filter.restaurantName = restaurantName
+    }
+    try {
+        const menus = await MenuModel.find(filter);
+        res.status(201).json(menus);
     } catch (e) {
         console.log(e);
         res.status(500).send('Something went wrong');
