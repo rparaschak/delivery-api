@@ -44,7 +44,7 @@ export const createUserAndRestaurant = async (req, res) => {
         res.status(201).json({
             user: {
                 login: newUser.login,
-                restaurant: user.restaurant,
+                restaurant: newUser.restaurant,
             },
             tokens: {
                 accessToken
