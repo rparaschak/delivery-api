@@ -1,5 +1,9 @@
-import {Router} from 'express';
+import express from 'express';
 
-const menuRouter = new Router();
+import {createMenu} from "./controller.js";
 
-menuRouter.get();
+const menuRouter = new express.Router();
+
+menuRouter.post('/menu', createMenu);
+
+export default menuRouter;
