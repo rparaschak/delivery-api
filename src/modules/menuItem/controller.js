@@ -19,11 +19,11 @@ export const createMenuItem = async (req, res) => {
     }
 };
 
-export const getMenuItem = async (req,res) => {
+export const getMenuItem = async (req, res) => {
     const {menuId, restaurantId} = req.query;
     try {
         if (restaurantId) {
-            const menusInRestaurant = await MenuModel.find({restaurant:restaurantId});
+            const menusInRestaurant = await MenuModel.find({restaurant: restaurantId});
             const menuIds = menusInRestaurant.map(item => item._id);
             const items = await MenuItemModel.find({menuId: {$in: menuIds}});
             res.status(200).send(items);
