@@ -39,6 +39,29 @@ export const getMenuItem = async (req, res) => {
     }
 };
 
+export const updateMenuItem = async (req, res) => {
+    const {id} = req.params;
+    const {name, price, description} = req.body;
+    const updatedItem = {};
+
+    if (name)
+        updatedItem.name = name;
+    if (price)
+        updatedItem.price = price;
+    if (description)
+        updatedItem.description = description;
+
+    try {
+        const menuItem = await MenuItemModel.findOneAndUpdate({_id: id}, updatedItem, {new: true});
+        if (!menuItem)
+            return res.status(404).send(`menus with id ${id} not found`);
+        res.status(200).json(menuItem);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Something went wrong');
+    }
+};
+
 export const deleteMenuItem = async (req, res) => {
     const {id} = req.params;
     if (!id)
