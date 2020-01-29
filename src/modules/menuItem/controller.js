@@ -38,3 +38,18 @@ export const getMenuItem = async (req,res) => {
         res.status(500).send('Something went wrong');
     }
 };
+
+export const deleteMenuItem = async (req, res) => {
+    const {id} = req.params;
+    if (!id)
+        throw new Error('Id field is required');
+    try {
+        await MenuItemModel.deleteOne({
+            _id: id
+        });
+        res.status(204).send();
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Something went wrong');
+    }
+};
