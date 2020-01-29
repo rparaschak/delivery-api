@@ -1,9 +1,11 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 import menuRouter from './modules/menu/router.js';
 import userRouter from './modules/user/router.js';
+import orderRouter from './modules/order/router.js';
 
 const app = express();
 
@@ -14,9 +16,11 @@ const app = express();
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json({type: 'application/*+json'}));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/menu', menuRouter);
 app.use('/user', userRouter);
+app.use('/order', orderRouter);
 
 app.use((error, req, res, next) => {
     if(error){
