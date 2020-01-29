@@ -1,5 +1,4 @@
 import MenuItem from "./models/MenuItem.js";
-import mongoose from "mongoose";
 
 export const createMenuItem = async (req, res) => {
     const {name, price, description, menuId} = req.body;

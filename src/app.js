@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/menu', menuRouter);
-app.use('/menuItem', menuItemRouter);
+app.use('/menu-item', menuItemRouter);
 app.use('/user', userRouter);
 app.use('/order', orderRouter);
 
