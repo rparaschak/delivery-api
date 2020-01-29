@@ -42,15 +42,30 @@ export const deleteMenu = async (req, res) => {
 };
 
 export const getMenus = async (req, res) => {
-    const {restaurantName} = req.query;
+    const {restaurantId} = req.query;
 
     const filter = {};
-    if (restaurantName) {
-        filter.restaurantName = restaurantName
+    if (restaurantId) {
+        filter.restaurant = restaurantId
     }
     try {
         const menus = await MenuModel.find(filter);
-        res.status(201).json(menus);
+        res.status(200).json(menus);
+    } catch (e) {
+        console.log(e);
+        res.status(500).send('Something went wrong');
+    }
+};
+
+export const updateMenu = async (req, res) => {
+    const {id} = req.params;
+    const {name} = req.body;
+
+    try {
+        const menu = await MenuModel.findOneAndUpdate({_id:id},{name},{new: true});
+        if (!menu)
+            return res.status(404).send(`menus with id ${id} not found`);
+        res.status(200).json(menu);
     } catch (e) {
         console.log(e);
         res.status(500).send('Something went wrong');
