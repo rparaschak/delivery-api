@@ -5,6 +5,6 @@ import {runAsyncWrapper} from "../../utils/asyncMiddleware.js";
 
 const menuRouter = new express.Router();
 
-menuRouter.post('/menu', runAsyncWrapper(createMenu));
+menuRouter.post('', runAsyncWrapper(createMenu));
 
 export default menuRouter;

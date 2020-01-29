@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 
 import menuRouter from './modules/menu/router.js';
+import userRouter from './modules/user/router.js';
 
 const app = express();
 
@@ -14,11 +15,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json({type: 'application/*+json'}));
 app.use(bodyParser.json());
 
-app.use(menuRouter);
+app.use('/menu', menuRouter);
+app.use('/user', userRouter);
 
-mongoose.connect('mongodb+srv://deliverUser:nH1MzZgaSB5yrdN1@deliver-kxvhj.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true})
+mongoose.connect('mongodb+srv://deliverUser:nH1MzZgaSB5yrdN1@deliver-kxvhj.mongodb.net/deliver?retryWrites=true&w=majority', {useNewUrlParser: true})
   .then(() => {
-    console.log('COnnected to DB');
+    console.log('Connected to DB');
     app.listen(3000, () => console.log(`Example app listening on port 3000!`));
   })
   .catch(() => { console.log('Could not connect to DB'); });
