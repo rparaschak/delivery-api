@@ -57,3 +57,34 @@ export const createUserAndRestaurant = async (req, res) => {
         return;
     }
 };
+
+export const authenticate = async (req, res) => {
+    const {login, password} = req.body;
+
+    if (!login || !password) {
+        res.status(400).json({message: '!login || ! password'});
+        throw new Error('!login || ! password');
+    }
+
+    try {
+        const user = await UserModel.findOne({login, password});
+
+        if(!user)
+            throw new Error('Wrong credentials.');
+
+        const accessToken = createAccessTokenForUser(user.id);
+
+        res.status(201).json({
+            user: {
+                login: user.login,
+            },
+            tokens: {
+                accessToken
+            },
+        });
+    } catch(e){
+        console.log(e);
+        res.status(500).send(e.message);
+        return;
+    }
+};
