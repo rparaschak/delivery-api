@@ -6,6 +6,7 @@ import cors from 'cors';
 import menuRouter from './modules/menu/router.js';
 import userRouter from './modules/user/router.js';
 import orderRouter from './modules/order/router.js';
+import menuItemRouter from "./modules/menuItem/router.js";
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/menu', menuRouter);
+app.use('/menu-item', menuItemRouter);
 app.use('/user', userRouter);
 app.use('/order', orderRouter);
 
