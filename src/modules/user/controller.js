@@ -94,7 +94,7 @@ export const getUser = async (req, res) => {
 
     try {
         const user = await UserModel.findOne({_id: userId});
-        res.status(201).json({
+        res.status(200).json({
             user: {
                 login: user.login,
                 restaurant: user.restaurant
