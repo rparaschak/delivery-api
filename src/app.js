@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
+import restaurantRouter from './modules/restaurant/router.js';
 import menuRouter from './modules/menu/router.js';
 import userRouter from './modules/user/router.js';
 import orderRouter from './modules/order/router.js';
@@ -19,6 +20,7 @@ app.use(bodyParser.json({type: 'application/*+json'}));
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use('/restaurant', restaurantRouter);
 app.use('/menu', menuRouter);
 app.use('/menu-item', menuItemRouter);
 app.use('/user', userRouter);
