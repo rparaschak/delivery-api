@@ -59,6 +59,48 @@ export const getOrders = async (req, res) => {
   }
 };
 
+export const updateOrder = async (req, res) => {
+  const { orderId } = req.params;
+  const { userId } = extractAuth(req);
+  const { isConfirmed } = req.body;
+
+  try {
+
+    const user = await UserModel.findOne({ _id: userId });
+    if (!user) {
+      throw { status: 401, message: 'Not authorized' };
+    }
+
+    if (!orderId || isConfirmed === undefined) {
+      throw { status: 400, message: '!orderId || !isConfirmed' };
+    }
+
+    const order = await OrderModel.findOne({ _id: orderId });
+    if (!order) {
+      throw { status: 404, message: 'Order not found' };
+    }
+
+    if (order.restaurant.toString() !== user.restaurant.toString()) {
+      throw { status: 403, message: 'Not an owner' };
+    }
+
+    const updatedOrder = await OrderModel.findOneAndUpdate(
+      { _id: order._id },
+      { isConfirmed: isConfirmed },
+      { new: true },
+    );
+
+    res.status(200).send(updatedOrder);
+
+  } catch (e) {
+    if (e.status) {
+      res.status(e.status).send(e.message);
+    } else {
+      throw e;
+    }
+  }
+};
+
 export const markOrderAsRemoved = async (req, res) => {
   const { orderId } = req.params;
   const { userId } = extractAuth(req);
