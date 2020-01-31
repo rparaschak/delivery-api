@@ -10,7 +10,7 @@ const OrderSchema = new mongoose.Schema({
   deliveryTime: String, // TODO: make as date?
   description: String,
   items: [{
-    itemId: Types.ObjectId,
+    menuItemId: Types.ObjectId,
     count: Number,
   }],
   dateCreated: { type: Date, default: Date.now },
