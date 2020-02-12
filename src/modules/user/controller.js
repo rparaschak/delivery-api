@@ -7,9 +7,9 @@ import {extractAuth} from "./extractAuth.js";
 export const createUserAndRestaurant = async (req, res) => {
     const {login, password, restaurantName, restaurantDomain} = req.body;
 
-    if (!login || !password || !restaurantName) {
-        res.status(400).json({message: '!login || ! password || restaurantName'});
-        throw new Error('!login || ! password || restaurantName');
+    if (!login || !password || !restaurantName || !restaurantDomain) {
+        res.status(400).json({message: '!login || ! password || !restaurantName || !restaurantDomain'});
+        throw new Error('!login || ! password || !restaurantName || !restaurantDomain');
     }
 
     try {
