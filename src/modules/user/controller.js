@@ -5,7 +5,7 @@ import {extractAuth} from "./extractAuth.js";
 
 /** Creates user and restaurant */
 export const createUserAndRestaurant = async (req, res) => {
-    const {login, password, restaurantName} = req.body;
+    const {login, password, restaurantName, restaurantDomain} = req.body;
 
     if (!login || !password || !restaurantName) {
         res.status(400).json({message: '!login || ! password || restaurantName'});
@@ -14,7 +14,7 @@ export const createUserAndRestaurant = async (req, res) => {
 
     try {
         const restaurantPromise = RestaurantModel
-            .findOne({name: restaurantName});
+            .findOne({restaurantDomain});
 
         const userPromise = UserModel
             .findOne({login: login});
@@ -22,14 +22,15 @@ export const createUserAndRestaurant = async (req, res) => {
         const [restaurant, user] = await Promise.all([restaurantPromise, userPromise]);
 
         if (restaurant)
-            throw new Error('Such restaurant name already exists.');
+            throw new Error('Such restaurant domain already exists.');
 
         if (user)
             throw new Error('Such user name already exists.');
 
         const newRestaurant = await RestaurantModel
             .create({
-                name: restaurantName,
+                displayName: restaurantName,
+                domainName: restaurantDomain,
             });
 
         const newUser = await UserModel
