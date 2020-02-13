@@ -42,12 +42,14 @@ export const deleteMenu = async (req, res) => {
 };
 
 export const getMenus = async (req, res) => {
-    const {restaurantId} = req.query;
-
+    const { restaurantId, menuId } = req.query;
     const filter = {};
-    if (restaurantId) {
+    if(menuId) {
+        filter._id = menuId;
+    } else if(restaurantId) {
         filter.restaurant = restaurantId
     }
+
     try {
         const menus = await MenuModel.find(filter);
         res.status(200).json(menus);
